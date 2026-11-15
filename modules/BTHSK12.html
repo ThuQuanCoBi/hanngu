@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Tập HSK 1 - HSK 2 (Hệ 3.0)</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans SC cho chữ Hán chuẩn đẹp -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#060E1A',
+                            900: '#0B192C',
+                            800: '#132743',
+                            700: '#1E3E62',
+                        },
+                        gold: {
+                            400: '#F3C623',
+                            500: '#D4AF37',
+                            600: '#B59020',
+                        },
+                        silver: {
+                            100: '#F8FAFC',
+                            200: '#E2E8F0',
+                            300: '#CBD5E1',
+                            400: '#94A3B8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        chinese: ['"Noto Sans SC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tùy chỉnh thanh cuộn và hiệu ứng chuyển động */
+        body {
+            background-color: #0B192C;
+            color: #F8FAFC;
+        }
+        .chinese-text {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .word-chip {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        .word-chip:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+        }
+        .word-chip:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .gold-border-glow {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+        }
+        /* Ẩn Pinyin khi tắt chế độ Pinyin */
+        body.hide-pinyin .pinyin-text {
+            display: none;
+        }
+        /* Hiệu ứng mượt khi mở giải thích */
+        .explanation-box {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-gold-500 selection:text-navy-900">
+
+    <!-- HEADER: Thanh điều hướng & Công cụ -->
+    <header class="bg-navy-950 border-b border-gold-500/30 sticky top-0 z-40 shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Logo & Tiêu đề -->
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-bold text-xl shadow-md">
+                    汉
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-silver-100 tracking-tight flex items-center gap-2">
+                        LUYỆN TẬP HSK 1 - HSK 2
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/40">Hệ 3.0</span>
+                    </h1>
+                    <p class="text-xs text-silver-400">Ngữ pháp trọng điểm: 的 · 比 · 得 · 地 · Bổ ngữ · Lượng từ</p>
+                </div>
+            </div>
+
+            <!-- Công cụ hỗ trợ (Bật/Tắt Pinyin & Điểm tổng) -->
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                <button id="togglePinyinBtn" onclick="togglePinyin()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 border border-silver-300/20 text-sm font-medium text-silver-200 transition">
+                    <i class="fa-solid fa-language text-gold-400"></i>
+                    <span id="pinyinBtnLabel">Pinyin: BẬT</span>
+                </button>
+                
+                <div class="px-3.5 py-2 rounded-xl bg-navy-900 border border-gold-500/40 text-sm font-semibold text-gold-400 flex items-center gap-2">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="globalScoreDisplay">Điểm: 0 / 70</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS ĐIỀU HƯỚNG 3 PHẦN -->
+        <div class="max-w-5xl mx-auto px-4">
+            <nav class="flex space-x-2 overflow-x-auto pb-0" aria-label="Tabs">
+                <button onclick="switchTab('part1')" id="tab-part1" class="tab-btn active flex-1 sm:flex-none px-5 py-3 text-sm font-semibold border-b-2 border-gold-400 text-gold-400 bg-navy-900/60 rounded-t-xl transition whitespace-nowrap flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-down-a-z"></i>
+                    <span>1. Sắp xếp câu (20)</span>
+                </button>
+                <button onclick="switchTab('part2')" id="tab-part2" class="tab-btn flex-1 sm:flex-none px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-silver-400 hover:text-silver-200 hover:bg-navy-900/40 rounded-t-xl transition whitespace-nowrap flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>2. Sửa câu sai (20)</span>
+                </button>
+                <button onclick="switchTab('part3')" id="tab-part3" class="tab-btn flex-1 sm:flex-none px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-silver-400 hover:text-silver-200 hover:bg-navy-900/40 rounded-t-xl transition whitespace-nowrap flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <span>3. Đọc hiểu (10 đoạn)</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6">
+
+        <!-- ==================== PHẦN 1: SẮP XẾP CÂU ==================== -->
+        <section id="section-part1" class="space-y-6">
+            <!-- Hướng dẫn phần 1 -->
+            <div class="bg-navy-800/80 border border-gold-500/30 rounded-2xl p-5 gold-border-glow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-gold-400 flex items-center gap-2">
+                        <i class="fa-solid fa-puzzle-piece"></i> PHẦN 1: SẮP XẾP TỪ THÀNH CÂU HOÀN CHỈNH
+                    </h2>
+                    <p class="text-sm text-silver-300 mt-1">
+                        Bấm vào các thẻ từ bên dưới theo đúng trật tự ngữ pháp (hoặc bấm vào từ đã chọn để trả lại). Sau khi hoàn thành, bấm <strong>"Kiểm tra đáp án"</strong> để xem kết quả và giải thích chi tiết.
+                    </p>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <button onclick="resetPart1()" class="px-4 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-950 text-silver-300 border border-silver-400/30 text-sm font-medium transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Làm lại phần 1
+                    </button>
+                    <button onclick="checkAllPart1()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-bold text-sm shadow-lg transition">
+                        <i class="fa-solid fa-check-double mr-1"></i> Kiểm tra tất cả
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danh sách 20 câu sắp xếp -->
+            <div id="part1-container" class="space-y-5"></div>
+
+            <!-- Nút kiểm tra cuối phần 1 -->
+            <div class="bg-navy-800 border border-gold-500/40 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div id="part1-summary" class="text-sm font-medium text-silver-200">
+                    Hoàn thành các câu trên và nhấn nút bên cạnh để chấm điểm Phần 1.
+                </div>
+                <button onclick="checkAllPart1()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-bold text-sm shadow-lg transition">
+                    <i class="fa-solid fa-spell-check mr-1.5"></i> Kiểm tra đáp án Phần 1
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== PHẦN 2: SỬA CÂU SAI ==================== -->
+        <section id="section-part2" class="hidden space-y-6">
+            <!-- Hướng dẫn phần 2 -->
+            <div class="bg-navy-800/80 border border-gold-500/30 rounded-2xl p-5 gold-border-glow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-gold-400 flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> PHẦN 2: TÌM VÀ SỬA LỖI SAI TRONG CÂU
+                    </h2>
+                    <p class="text-sm text-silver-300 mt-1">
+                        Mỗi câu dưới đây đều chứa một lỗi sai ngữ pháp HSK 1 - HSK 2. Hãy gõ lại <strong>câu tiếng Trung đúng hoàn chỉnh</strong> vào ô trống bên dưới (không cần gõ Pinyin), sau đó bấm kiểm tra.
+                    </p>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <button onclick="resetPart2()" class="px-4 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-950 text-silver-300 border border-silver-400/30 text-sm font-medium transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Làm lại phần 2
+                    </button>
+                    <button onclick="checkAllPart2()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-bold text-sm shadow-lg transition">
+                        <i class="fa-solid fa-check-double mr-1"></i> Kiểm tra tất cả
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danh sách 20 câu sửa lỗi -->
+            <div id="part2-container" class="space-y-5"></div>
+
+            <!-- Nút kiểm tra cuối phần 2 -->
+            <div class="bg-navy-800 border border-gold-500/40 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div id="part2-summary" class="text-sm font-medium text-silver-200">
+                    Nhập câu sửa lỗi và nhấn nút kiểm tra để xem đáp án và phân tích lỗi sai.
+                </div>
+                <button onclick="checkAllPart2()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-bold text-sm shadow-lg transition">
+                    <i class="fa-solid fa-spell-check mr-1.5"></i> Kiểm tra đáp án Phần 2
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== PHẦN 3: ĐỌC HIỂU ĐOẠN VĂN ==================== -->
+        <section id="section-part3" class="hidden space-y-6">
+            <!-- Hướng dẫn phần 3 -->
+            <div class="bg-navy-800/80 border border-gold-500/30 rounded-2xl p-5 gold-border-glow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-gold-400 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> PHẦN 3: ĐỌC ĐOẠN VĂN NGẮN VÀ TRẢ LỜI CÂU HỎI
+                    </h2>
+                    <p class="text-sm text-silver-300 mt-1">
+                        Đọc kỹ 10 đoạn văn ngắn (từ vựng HSK 1-2 hệ 3.0). Trả lời 3 câu hỏi cho mỗi đoạn bằng tiếng Trung, sau đó bấm <strong>"Kiểm tra đoạn này"</strong> hoặc <strong>"Kiểm tra tất cả"</strong> để xem đáp án mẫu, bản dịch tiếng Việt và giải thích.
+                    </p>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <button onclick="resetPart3()" class="px-4 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-950 text-silver-300 border border-silver-400/30 text-sm font-medium transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Làm lại phần 3
+                    </button>
+                    <button onclick="checkAllPart3()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-bold text-sm shadow-lg transition">
+                        <i class="fa-solid fa-check-double mr-1"></i> Kiểm tra tất cả
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danh sách 10 đoạn văn -->
+            <div id="part3-container" class="space-y-8"></div>
+
+            <!-- Nút kiểm tra cuối phần 3 -->
+            <div class="bg-navy-800 border border-gold-500/40 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div id="part3-summary" class="text-sm font-medium text-silver-200">
+                    Hoàn thành các câu hỏi đọc hiểu và nhấn kiểm tra để xem bản dịch & đáp án chuẩn.
+                </div>
+                <button onclick="checkAllPart3()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-bold text-sm shadow-lg transition">
+                    <i class="fa-solid fa-spell-check mr-1.5"></i> Kiểm tra đáp án Phần 3
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy-950 border-t border-silver-300/10 py-6 mt-12 text-center text-xs text-silver-400">
+        <p>Tài liệu ôn luyện tiếng Trung HSK 1 - HSK 2 (Tiêu chuẩn 3.0) • Thiết kế hỗ trợ học tập tương tác</p>
+    </footer>
+
+    <!-- Hộp thông báo Toast (Thay thế alert) -->
+    <div id="toastBox" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-navy-900 border border-gold-500 text-silver-100 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
+            <i class="fa-solid fa-circle-info text-gold-400 text-base"></i>
+            <span id="toastMessage">Thông báo</span>
+        </div>
+    </div>
+
+    <!-- DỮ LIỆU & LOGIC JAVASCRIPT -->
+    <script>
+        // =========================================================================
+        // DỮ LIỆU BÀI TẬP ĐÃ CHUẨN HÓA 100% THEO HSK 1 - HSK 2 (HỆ 3.0)
+        // =========================================================================
+
+        // PHẦN 1: 20 CÂU SẮP XẾP CÂU (Từ dễ đến khó)
+        const part1Data = [
+            {
+                id: 1,
+                level: "HSK 1",
+                tag: "Trạng ngữ thời gian",
+                words: [
+                    { zh: "去", py: "qù" },
+                    { zh: "我", py: "wǒ" },
+                    { zh: "医院", py: "yīyuàn" },
+                    { zh: "明天", py: "míngtiān" }
+                ],
+                answer: "我明天去医院",
+                acceptable: ["我明天去医院", "明天我去医院"],
+                pinyinAnswer: "Wǒ míngtiān qù yīyuàn.",
+                meaning: "Ngày mai tôi đi bệnh viện.",
+                explanation: "Trong tiếng Trung, từ chỉ thời gian (明天) đứng trước động từ (去), có thể đứng sau chủ ngữ (我明天去...) hoặc đầu câu (明天我去...)."
+            },
+            {
+                id: 2,
+                level: "HSK 1",
+                tag: "Định ngữ + 的",
+                words: [
+                    { zh: "吃", py: "chī" },
+                    { zh: "苹果", py: "píngguǒ" },
+                    { zh: "喜欢", py: "xǐhuan" },
+                    { zh: "妈妈", py: "māma" },
+                    { zh: "我", py: "wǒ" },
+                    { zh: "的", py: "de" }
+                ],
+                answer: "我的妈妈喜欢吃苹果",
+                acceptable: ["我的妈妈喜欢吃苹果", "我妈妈喜欢吃苹果"],
+                pinyinAnswer: "Wǒ de māma xǐhuan chī píngguǒ.",
+                meaning: "Mẹ của tôi thích ăn táo.",
+                explanation: "Cấu trúc sở hữu: Đại từ (我) + 的 + Danh từ (妈妈) làm chủ ngữ. Động từ năng nguyện 喜欢 (thích) đứng trước động từ chính 吃 (ăn)."
+            },
+            {
+                id: 3,
+                level: "HSK 1",
+                tag: "Lượng từ 本 + Câu hỏi 谁的",
+                words: [
+                    { zh: "书", py: "shū" },
+                    { zh: "这", py: "zhè" },
+                    { zh: "本", py: "běn" },
+                    { zh: "是", py: "shì" },
+                    { zh: "谁", py: "shéi" },
+                    { zh: "的", py: "de" }
+                ],
+                answer: "这本书是谁的",
+                acceptable: ["这本书是谁的"],
+                pinyinAnswer: "Zhè běn shū shì shéi de?",
+                meaning: "Quyển sách này là của ai?",
+                explanation: "Cấu trúc chỉ định: 这/那 + Lượng từ (本 - dùng cho sách vở) + Danh từ (书). 谁的 (của ai) đứng cuối làm tân ngữ cho 是."
+            },
+            {
+                id: 4,
+                level: "HSK 1",
+                tag: "Phương vị từ 上 + 在",
+                words: [
+                    { zh: "猫", py: "māo" },
+                    { zh: "椅子", py: "yǐzi" },
+                    { zh: "上", py: "shàng" },
+                    { zh: "在", py: "zài" },
+                    { zh: "小", py: "xiǎo" }
+                ],
+                answer: "小猫在椅子上",
+                acceptable: ["小猫在椅子上"],
+                pinyinAnswer: "Xiǎo māo zài yǐzi shàng.",
+                meaning: "Con mèo nhỏ ở trên ghế.",
+                explanation: "Cấu trúc chỉ vị trí: Chủ thể (小猫) + 在 + Danh từ địa điểm + Phương vị từ (椅子上 - trên ghế)."
+            },
+            {
+                id: 5,
+                level: "HSK 1",
+                tag: "Câu chữ 有 + Phương vị từ",
+                words: [
+                    { zh: "杯子", py: "bēizi" },
+                    { zh: "里面", py: "lǐmiàn" },
+                    { zh: "有", py: "yǒu" },
+                    { zh: "水", py: "shuǐ" },
+                    { zh: "热", py: "rè" }
+                ],
+                answer: "杯子里面有热水",
+                acceptable: ["杯子里面有热水"],
+                pinyinAnswer: "Bēizi lǐmiàn yǒu rè shuǐ.",
+                meaning: "Bên trong cốc có nước nóng.",
+                explanation: "Địa điểm (杯子里面) + 有 + Danh từ (热水 - nước nóng). Tính từ 热 đứng trực tiếp trước danh từ đơn âm tiết 水."
+            },
+            {
+                id: 6,
+                level: "HSK 2",
+                tag: "Bổ ngữ trạng thái 得",
+                words: [
+                    { zh: "汉字", py: "hànzì" },
+                    { zh: "写", py: "xiě" },
+                    { zh: "得", py: "de" },
+                    { zh: "他", py: "tā" },
+                    { zh: "很", py: "hěn" },
+                    { zh: "好", py: "hǎo" }
+                ],
+                answer: "他汉字写得很好",
+                acceptable: ["他汉字写得很好", "汉字他写得很好"],
+                pinyinAnswer: "Tā hànzì xiě de hěn hǎo.",
+                meaning: "Anh ấy viết chữ Hán rất đẹp.",
+                explanation: "Trọng điểm HSK 2: Khi động từ mang tân ngữ (写汉字) và có bổ ngữ trạng thái (得很好), tân ngữ (汉字) phải đưa lên trước động từ hoặc lặp lại động từ (他写汉字写得很好)."
+            },
+            {
+                id: 7,
+                level: "HSK 2",
+                tag: "Câu so sánh chữ 比",
+                words: [
+                    { zh: "今天", py: "jīntiān" },
+                    { zh: "比", py: "bǐ" },
+                    { zh: "昨天", py: "zuótiān" },
+                    { zh: "冷", py: "lěng" },
+                    { zh: "天气", py: "tiānqì" }
+                ],
+                answer: "今天天气比昨天冷",
+                acceptable: ["今天天气比昨天冷", "今天的天气比昨天冷"],
+                pinyinAnswer: "Jīntiān tiānqì bǐ zuótiān lěng.",
+                meaning: "Thời tiết hôm nay lạnh hơn hôm qua.",
+                explanation: "Cấu trúc so sánh hơn: A (今天天气) + 比 + B (昨天) + Tính từ (冷). Lưu ý không dùng 很 trước tính từ trong câu chữ 比."
+            },
+            {
+                id: 8,
+                level: "HSK 2",
+                tag: "Bổ ngữ trạng thái 得 + 极了",
+                words: [
+                    { zh: "老师", py: "lǎoshī" },
+                    { zh: "说", py: "shuō" },
+                    { zh: "的", py: "de" },
+                    { zh: "话", py: "huà" },
+                    { zh: "我们", py: "wǒmen" },
+                    { zh: "听得", py: "tīng de" },
+                    { zh: "很高兴", py: "hěn gāoxìng" }
+                ],
+                answer: "老师说的话我们听得很高兴",
+                acceptable: ["老师说的话我们听得很高兴", "我们听老师说的话听得很高兴"],
+                pinyinAnswer: "Lǎoshī shuō de huà wǒmen tīng de hěn gāoxìng.",
+                meaning: "Lời thầy giáo nói chúng tôi nghe thấy rất vui.",
+                explanation: "Cụm danh từ trung tâm ngữ 老师说的话 (lời thầy nói) được đưa lên đầu làm chủ đề, theo sau là chủ ngữ 我们 + Động từ 听 + 得 + Bổ ngữ 很高兴."
+            },
+            {
+                id: 9,
+                level: "HSK 2",
+                tag: "Trợ từ kết cấu 地",
+                words: [
+                    { zh: "高兴", py: "gāoxìng" },
+                    { zh: "他", py: "tā" },
+                    { zh: "地", py: "de" },
+                    { zh: "唱歌", py: "chànggē" },
+                    { zh: "跟", py: "gēn" },
+                    { zh: "朋友", py: "péngyou" }
+                ],
+                answer: "他跟朋友高兴地唱歌",
+                acceptable: ["他跟朋友高兴地唱歌", "他高兴地跟朋友唱歌"],
+                pinyinAnswer: "Tā gēn péngyou gāoxìng de chànggē.",
+                meaning: "Anh ấy vui vẻ hát cùng bạn bè.",
+                explanation: "Trợ từ kết cấu 地 nối tính từ (高兴) với động từ (唱歌) để miêu tả trạng thái/cách thức thực hiện hành động: Tính từ + 地 + Động từ."
+            },
+            {
+                id: 10,
+                level: "HSK 2",
+                tag: "Câu liên động (Phương tiện)",
+                words: [
+                    { zh: "飞机", py: "fēijī" },
+                    { zh: "坐", py: "zuò" },
+                    { zh: "昨天", py: "zuótiān" },
+                    { zh: "爸爸", py: "bàba" },
+                    { zh: "北京", py: "běijīng" },
+                    { zh: "去", py: "qù" },
+                    { zh: "了", py: "le" }
+                ],
+                answer: "爸爸昨天坐飞机去北京了",
+                acceptable: ["爸爸昨天坐飞机去北京了", "昨天爸爸坐飞机去北京了"],
+                pinyinAnswer: "Bàba zuótiān zuò fēijī qù Běijīng le.",
+                meaning: "Hôm qua bố đã đi Bắc Kinh bằng máy bay.",
+                explanation: "Câu liên động biểu thị phương thức: Chủ ngữ + Thời gian + Động từ 1 (坐飞机 - ngồi máy bay) + Động từ 2 (去北京 - đi Bắc Kinh) + 了."
+            },
+            {
+                id: 11,
+                level: "HSK 2",
+                tag: "Bổ ngữ kết quả 完 + 已经",
+                words: [
+                    { zh: "作业", py: "zuòyè" },
+                    { zh: "做", py: "zuò" },
+                    { zh: "完", py: "wán" },
+                    { zh: "了", py: "le" },
+                    { zh: "我", py: "wǒ" },
+                    { zh: "的", py: "de" },
+                    { zh: "已经", py: "yǐjīng" }
+                ],
+                answer: "我的作业已经做完了",
+                acceptable: ["我的作业已经做完了"],
+                pinyinAnswer: "Wǒ de zuòyè yǐjīng zuò wán le.",
+                meaning: "Bài tập của tôi đã làm xong rồi.",
+                explanation: "Phó từ 已经 (đã) đứng trước động từ. Bổ ngữ kết quả 完 (xong) đứng ngay sau động từ 做 để chỉ hành động đã hoàn tất: 已经 + Động từ + 完 + 了."
+            },
+            {
+                id: 12,
+                level: "HSK 2",
+                tag: "Lượng từ 瓶 + Trạng ngữ địa điểm",
+                words: [
+                    { zh: "商店", py: "shāngdiàn" },
+                    { zh: "瓶", py: "píng" },
+                    { zh: "买了", py: "mǎi le" },
+                    { zh: "妈妈", py: "māma" },
+                    { zh: "两", py: "liǎng" },
+                    { zh: "水", py: "shuǐ" },
+                    { zh: "在", py: "zài" }
+                ],
+                answer: "妈妈在商店买了两瓶水",
+                acceptable: ["妈妈在商店买了两瓶水"],
+                pinyinAnswer: "Māma zài shāngdiàn mǎi le liǎng píng shuǐ.",
+                meaning: "Mẹ đã mua hai chai nước ở cửa hàng.",
+                explanation: "Trạng ngữ chỉ địa điểm (在商店) luôn đứng trước động từ (买了). Số từ đi với lượng từ dùng 两 (两瓶水 - hai chai nước), không dùng 二."
+            },
+            {
+                id: 13,
+                level: "HSK 2",
+                tag: "Bổ ngữ kết quả 懂 + Phủ định 没",
+                words: [
+                    { zh: "汉语", py: "hànyǔ" },
+                    { zh: "听", py: "tīng" },
+                    { zh: "懂", py: "dǒng" },
+                    { zh: "没", py: "méi" },
+                    { zh: "老师", py: "lǎoshī" },
+                    { zh: "的", py: "de" },
+                    { zh: "我", py: "wǒ" }
+                ],
+                answer: "我没听懂老师的汉语",
+                acceptable: ["我没听懂老师的汉语", "老师的汉语我没听懂"],
+                pinyinAnswer: "Wǒ méi tīng dǒng lǎoshī de hànyǔ.",
+                meaning: "Tôi nghe không hiểu tiếng Trung của thầy giáo.",
+                explanation: "Phủ định của bổ ngữ kết quả dùng 没 (không dùng 不) đặt trước động từ: 没 + 听懂 (nghe không hiểu)."
+            },
+            {
+                id: 14,
+                level: "HSK 2",
+                tag: "Lượng từ 件 + Định ngữ",
+                words: [
+                    { zh: "衣服", py: "yīfu" },
+                    { zh: "红色", py: "hóngsè" },
+                    { zh: "那", py: "nà" },
+                    { zh: "件", py: "jiàn" },
+                    { zh: "的", py: "de" },
+                    { zh: "是", py: "shì" },
+                    { zh: "谁", py: "shéi" },
+                    { zh: "的", py: "de" }
+                ],
+                answer: "那件红色的衣服是谁的",
+                acceptable: ["那件红色的衣服是谁的"],
+                pinyinAnswer: "Nà jiàn hóngsè de yīfu shì shéi de?",
+                meaning: "Bộ quần áo màu đỏ kia là của ai?",
+                explanation: "Lượng từ của quần áo là 件 (一件衣服). Tính từ màu sắc 2 âm tiết (红色) thêm 的 trước danh từ: 那件 + 红色的 + 衣服."
+            },
+            {
+                id: 15,
+                level: "HSK 2",
+                tag: "Lặp lại động từ + 得",
+                words: [
+                    { zh: "踢", py: "tī" },
+                    { zh: "踢得", py: "tī de" },
+                    { zh: "哥哥", py: "gēge" },
+                    { zh: "足球", py: "zúqiú" },
+                    { zh: "好", py: "hǎo" },
+                    { zh: "非常", py: "fēicháng" }
+                ],
+                answer: "哥哥踢足球踢得非常好",
+                acceptable: ["哥哥踢足球踢得非常好"],
+                pinyinAnswer: "Gēge tī zúqiú tī de fēicháng hǎo.",
+                meaning: "Anh trai đá bóng đá rất giỏi.",
+                explanation: "Mẫu câu lặp động từ kinh điển HSK 2: Chủ ngữ + Động từ (踢) + Tân ngữ (足球) + Lặp động từ (踢) + 得 + Bổ ngữ mức độ (非常好)."
+            },
+            {
+                id: 16,
+                level: "HSK 2",
+                tag: "So sánh 比 + Bổ ngữ số lượng",
+                words: [
+                    { zh: "妹妹", py: "mèimei" },
+                    { zh: "高", py: "gāo" },
+                    { zh: "比", py: "bǐ" },
+                    { zh: "我", py: "wǒ" },
+                    { zh: "三", py: "sān" },
+                    { zh: "厘米", py: "límǐ" }
+                ],
+                answer: "妹妹比我高三厘米",
+                acceptable: ["妹妹比我高三厘米", "我比妹妹高三厘米"],
+                pinyinAnswer: "Mèimei bǐ wǒ gāo sān límǐ.",
+                meaning: "Em gái cao hơn tôi 3 xăng-ti-mét.",
+                explanation: "Khi biểu thị mức độ chênh lệch cụ thể trong câu chữ 比, số lượng từ (三厘米) đặt ngay sau tính từ: A + 比 + B + Tính từ + Số lượng cụ thể."
+            },
+            {
+                id: 17,
+                level: "HSK 2",
+                tag: "Đại từ nghi vấn 怎么",
+                words: [
+                    { zh: "汉字", py: "hànzì" },
+                    { zh: "怎么", py: "zěnme" },
+                    { zh: "写", py: "xiě" },
+                    { zh: "这个", py: "zhège" }
+                ],
+                answer: "这个汉字怎么写",
+                acceptable: ["这个汉字怎么写"],
+                pinyinAnswer: "Zhège hànzì zěnme xiě?",
+                meaning: "Chữ Hán này viết như thế nào?",
+                explanation: "Đại từ nghi vấn 怎么 (như thế nào) đứng ngay trước động từ (写) để hỏi cách thức thực hiện hành động."
+            },
+            {
+                id: 18,
+                level: "HSK 2",
+                tag: "Câu liên động chỉ mục đích",
+                words: [
+                    { zh: "商店", py: "shāngdiàn" },
+                    { zh: "去", py: "qù" },
+                    { zh: "昨天", py: "zuótiān" },
+                    { zh: "谁", py: "shéi" },
+                    { zh: "买", py: "mǎi" },
+                    { zh: "东西", py: "dōngxi" },
+                    { zh: "了", py: "le" }
+                ],
+                answer: "昨天谁去商店买东西了",
+                acceptable: ["昨天谁去商店买东西了", "谁昨天去商店买东西了"],
+                pinyinAnswer: "Zuótiān shéi qù shāngdiàn mǎi dōngxi le?",
+                meaning: "Hôm qua ai đã đi cửa hàng mua đồ vậy?",
+                explanation: "Cấu trúc 去 + Địa điểm (商店) + Làm gì (买东西) biểu thị mục đích của việc đi lại. Trợ từ 了 đặt cuối câu hỏi hành động đã xảy ra."
+            },
+            {
+                id: 19,
+                level: "HSK 2",
+                tag: "Câu chữ 把 + Bổ ngữ trạng thái",
+                words: [
+                    { zh: "房间", py: "fángjiān" },
+                    { zh: "他", py: "tā" },
+                    { zh: "打扫", py: "dǎsǎo" },
+                    { zh: "得", py: "de" },
+                    { zh: "把", py: "bǎ" },
+                    { zh: "很干净", py: "hěn gānjìng" }
+                ],
+                answer: "他把房间打扫得很干净",
+                acceptable: ["他把房间打扫得很干净"],
+                pinyinAnswer: "Tā bǎ fángjiān dǎsǎo de hěn gānjìng.",
+                meaning: "Anh ấy dọn dẹp căn phòng rất sạch sẽ.",
+                explanation: "Câu chữ 把: Chủ ngữ (他) + 把 + Tân ngữ (房间) + Động từ (打扫) + 得 + Bổ ngữ kết quả/trạng thái (很干净)."
+            },
+            {
+                id: 20,
+                level: "HSK 2",
+                tag: "Bổ ngữ động lượng 遍",
+                words: [
+                    { zh: "电影", py: "diànyǐng" },
+                    { zh: "看了", py: "kàn le" },
+                    { zh: "一", py: "yī" },
+                    { zh: "遍", py: "biàn" },
+                    { zh: "昨天", py: "zuótiān" },
+                    { zh: "晚上", py: "wǎnshang" },
+                    { zh: "我", py: "wǒ" }
+                ],
+                answer: "昨天晚上我看了一遍电影",
+                acceptable: ["昨天晚上我看了一遍电影", "我昨天晚上看了一遍电影"],
+                pinyinAnswer: "Zuótiān wǎnshang wǒ kàn le yī biàn diànyǐng.",
+                meaning: "Tối hôm qua tôi đã xem một lượt bộ phim.",
+                explanation: "Động lượng từ 遍 (lượt/lần từ đầu đến cuối) đứng giữa động từ và tân ngữ danh từ: Động từ (看了) + Số từ (一) + Động lượng từ (遍) + Tân ngữ (电影)."
+            }
+        ];
+
+        // PHẦN 2: 20 CÂU SỬA CÂU SAI (Từ dễ đến khó)
+        const part2Data = [
+            {
+                id: 1,
+                level: "HSK 1",
+                tag: "Giới từ 在 & Động từ 去",
+                wrong: "我明天去在学校。",
+                wrongPy: "Wǒ míngtiān qù zài xuéxiào.",
+                correct: ["我明天去学校。", "我明天去学校", "明天我去学校。", "明天我去学校"],
+                displayCorrect: "我明天去学校。",
+                explanation: "Động từ 去 (đi) mang trực tiếp tân ngữ chỉ địa điểm phía sau (去学校 - đi trường học), tuyệt đối không thêm giới từ 在 vào giữa."
+            },
+            {
+                id: 2,
+                level: "HSK 1",
+                tag: "Trợ từ động thái 了",
+                wrong: "妈妈买了三个苹果了。",
+                wrongPy: "Māma mǎi le sān gè píngguǒ le.",
+                correct: ["妈妈买了三个苹果。", "妈妈买了三个苹果", "妈妈买三个苹果了。", "妈妈买三个苹果了"],
+                displayCorrect: "妈妈买了三个苹果。",
+                explanation: "Khi tân ngữ có số lượng từ cụ thể (三个苹果) và câu đã kết thúc ý, chỉ cần dùng một chữ 了 ngay sau động từ (买了) để chỉ sự hoàn thành, không lặp lại 了 ở cuối câu."
+            },
+            {
+                id: 3,
+                level: "HSK 1",
+                tag: "Lượng từ của sách 本",
+                wrong: "这是我一本书。",
+                wrongPy: "Zhè shì wǒ yī běn shū.",
+                correct: ["这是我的一本书。", "这是我的一本书", "这是我的书。", "这是我的书"],
+                displayCorrect: "这是我的一本书。",
+                explanation: "Khi đại từ nhân xưng (我) làm định ngữ chỉ sở hữu cho cụm danh từ có số lượng từ (一本书), bắt buộc phải có trợ từ 的 ở giữa: 我的 + 一本书."
+            },
+            {
+                id: 4,
+                level: "HSK 2",
+                tag: "Bổ ngữ trạng thái 得",
+                wrong: "他说得很好汉语。",
+                wrongPy: "Tā shuō de hěn hǎo hànyǔ.",
+                correct: ["他说汉语说得很好。", "他说汉语说得很好", "他汉语说得很好。", "他汉语说得很好", "汉语他说得很好。", "汉语他说得很好"],
+                displayCorrect: "他说汉语说得很好。",
+                explanation: "Bổ ngữ trạng thái (得很好) phải bám sát ngay sau động từ, không được chen tân ngữ (汉语) vào sau bổ ngữ. Phải lặp lại động từ (说汉语说得很好) hoặc đưa tân ngữ lên trước (他汉语说得很好)."
+            },
+            {
+                id: 5,
+                level: "HSK 2",
+                tag: "Câu so sánh chữ 比",
+                wrong: "我的哥哥比我很高。",
+                wrongPy: "Wǒ de gēge bǐ wǒ hěn gāo.",
+                correct: ["我的哥哥比我高。", "我的哥哥比我高", "我哥哥比我高。", "我哥哥比我高", "我的哥哥比我高得多。", "我的哥哥比我高得多"],
+                displayCorrect: "我的哥哥比我高。",
+                explanation: "Trong câu so sánh chữ 比, trước tính từ không được dùng phó từ chỉ mức độ như 很, 非常, 真. Nếu muốn nhấn mạnh mức độ hơn nhiều, dùng 得多 hoặc 多了 ở sau tính từ (高得多)."
+            },
+            {
+                id: 6,
+                level: "HSK 1",
+                tag: "Trợ từ ngữ khí 了",
+                wrong: "昨天我去商店买东西了去。",
+                wrongPy: "Zuótiān wǒ qù shāngdiàn mǎi dōngxi le qù.",
+                correct: ["昨天我去商店买东西了。", "昨天我去商店买东西了", "我昨天去商店买东西了。", "我昨天去商店买东西了"],
+                displayCorrect: "昨天我去商店买东西了。",
+                explanation: "Thừa động từ 去 ở cuối câu. Trợ từ 了 đặt ở cuối câu để biểu thị toàn bộ sự việc đã xảy ra trong quá khứ."
+            },
+            {
+                id: 7,
+                level: "HSK 2",
+                tag: "Trợ từ kết cấu 地",
+                wrong: "她高兴地唱高兴歌。",
+                wrongPy: "Tā gāoxìng de chàng gāoxìng gē.",
+                correct: ["她高兴地唱歌。", "她高兴地唱歌"],
+                displayCorrect: "她高兴地唱歌。",
+                explanation: "Tính từ 高兴 đứng trước 地 đã bổ nghĩa cho động từ 唱歌 (hát một cách vui vẻ), không lặp lại từ 高兴 ở giữa 唱歌."
+            },
+            {
+                id: 8,
+                level: "HSK 1",
+                tag: "Vị trí động từ 是",
+                wrong: "那个红色的是衣服很漂亮。",
+                wrongPy: "Nàge hóngsè de shì yīfu hěn piàoliang.",
+                correct: ["那件红色的衣服很漂亮。", "那件红色的衣服很漂亮", "那个红色的衣服很漂亮。", "那个红色的衣服很漂亮"],
+                displayCorrect: "那件红色的衣服很漂亮。",
+                explanation: "Trong câu có vị ngữ là tính từ (很漂亮), không dùng động từ 是 nối giữa định ngữ và danh từ. Đồng thời nên dùng lượng từ 件 cho quần áo."
+            },
+            {
+                id: 9,
+                level: "HSK 2",
+                tag: "Bổ ngữ kết quả 懂",
+                wrong: "老师教我们汉字，我们学得很懂。",
+                wrongPy: "Lǎoshī jiāo wǒmen hànzì, wǒmen xué de hěn dǒng.",
+                correct: ["老师教我们汉字，我们学懂了。", "老师教我们汉字，我们学懂了", "老师教我们汉字，我们都学懂了。", "老师教我们汉字，我们都学懂了"],
+                displayCorrect: "老师教我们汉字，我们学懂了。",
+                explanation: "懂 (hiểu) là bổ ngữ kết quả (hoặc hiểu hoặc không hiểu), không đi kèm phó từ mức độ 很 và trợ từ 得. Sửa thành bổ ngữ kết quả: 学懂了 (đã học hiểu rồi)."
+            },
+            {
+                id: 10,
+                level: "HSK 1",
+                tag: "Lượng từ danh từ",
+                wrong: "桌子上有三个书。",
+                wrongPy: "Zhuōzi shàng yǒu sān gè shū.",
+                correct: ["桌子上有三本书。", "桌子上有三本书"],
+                displayCorrect: "桌子上有三本书。",
+                explanation: "Sai lượng từ. Lượng từ chuẩn của sách (书) là 本 (三本书), không dùng 个."
+            },
+            {
+                id: 11,
+                level: "HSK 2",
+                tag: "Logic câu so sánh 比",
+                wrong: "我比他高，他比我高。",
+                wrongPy: "Wǒ bǐ tā gāo, tā bǐ wǒ gāo.",
+                correct: ["我比他高，他比我矮。", "我比他高，他比我矮", "我不比他高，他比我高。", "我不比他高，他比我高"],
+                displayCorrect: "我比他高，他比我矮。",
+                explanation: "Mâu thuẫn về mặt ngữ nghĩa: Nếu 'Tôi cao hơn anh ấy' (我比他高) thì vế sau phải là 'Anh ấy thấp hơn tôi' (他比我矮)."
+            },
+            {
+                id: 12,
+                level: "HSK 1",
+                tag: "Vị trí trạng ngữ địa điểm 在",
+                wrong: "他每天学习汉语在图书馆。",
+                wrongPy: "Tā měitiān xuéxí hànyǔ zài túshūguǎn.",
+                correct: ["他每天在图书馆学习汉语。", "他每天在图书馆学习汉语", "每天他在图书馆学习汉语。", "每天他在图书馆学习汉语"],
+                displayCorrect: "他每天在图书馆学习汉语。",
+                explanation: "Khác với tiếng Việt, trạng ngữ chỉ địa điểm (在图书馆 - ở thư viện) bắt buộc phải đặt TRƯỚC động từ chính (学习汉语)."
+            },
+            {
+                id: 13,
+                level: "HSK 2",
+                tag: "Bổ ngữ khả năng 写不清楚",
+                wrong: "这个汉字我写不清楚得。",
+                wrongPy: "Zhège hànzì wǒ xiě bù qīngchu de.",
+                correct: ["这个汉字我写不清楚。", "这个汉字我写不清楚", "这个汉字我写得不清楚。", "这个汉字我写得不清楚"],
+                displayCorrect: "这个汉字我写不清楚。",
+                explanation: "Hình thức phủ định của bổ ngữ khả năng là: Động từ + 不 + Bổ ngữ (写不清楚 - viết không rõ), không thêm 得 ở cuối câu."
+            },
+            {
+                id: 14,
+                level: "HSK 1",
+                tag: "Câu hỏi nghi vấn 几 & 吗",
+                wrong: "你吃几个苹果了吗？",
+                wrongPy: "Nǐ chī jǐ gè píngguǒ le ma?",
+                correct: ["你吃了几个苹果？", "你吃了几个苹果", "你吃几个苹果了？", "你吃几个苹果了", "你吃苹果了吗？", "你吃苹果了吗"],
+                displayCorrect: "你吃了几个苹果？",
+                explanation: "Trong câu đã có đại từ nghi vấn (几 - mấy) thì tuyệt đối không dùng trợ từ nghi vấn 吗 ở cuối câu."
+            },
+            {
+                id: 15,
+                level: "HSK 2",
+                tag: "Kết hợp 比 và 得",
+                wrong: "他跑得快比我。",
+                wrongPy: "Tā pǎo de kuài bǐ wǒ.",
+                correct: ["他比我跑得快。", "他比我跑得快", "他跑得比我快。", "他跑得比我快"],
+                displayCorrect: "他比我跑得快。",
+                explanation: "Cụm giới từ so sánh (比我) phải đặt trước động từ (他比我跑得快) hoặc đặt sau chữ 得 (他跑得比我快), không đặt ở cuối câu."
+            },
+            {
+                id: 16,
+                level: "HSK 2",
+                tag: "Vị trí động lượng từ 次",
+                wrong: "昨天晚上我看电影两次。",
+                wrongPy: "Zuótiān wǎnshang wǒ kàn diànyǐng liǎng cì.",
+                correct: ["昨天晚上我看了两次电影。", "昨天晚上我看了两次电影", "我昨天晚上看了两次电影。", "我昨天晚上看了两次电影"],
+                displayCorrect: "昨天晚上我看了两次电影。",
+                explanation: "Khi tân ngữ là danh từ chỉ sự vật thông thường (电影), bổ ngữ động lượng (两次) phải đặt giữa động từ và tân ngữ: 看了 + 两次 + 电影."
+            },
+            {
+                id: 17,
+                level: "HSK 2",
+                tag: "Câu chữ 把",
+                wrong: "妈妈把饭做。",
+                wrongPy: "Māma bǎ fàn zuò.",
+                correct: ["妈妈把饭做好了。", "妈妈把饭做好了", "妈妈把饭做完了。", "妈妈把饭做完了"],
+                displayCorrect: "妈妈把饭做好了。",
+                explanation: "Trong câu chữ 把, sau động từ chính (做) không được đứng trơ trọi một mình mà bắt buộc phải có thành phần khác (như bổ ngữ kết quả 好, 完 hoặc 了) để chỉ sự tác động/kết quả lên tân ngữ."
+            },
+            {
+                id: 18,
+                level: "HSK 2",
+                tag: "Bổ ngữ mức độ trong câu 比",
+                wrong: "这件衣服比那件贵一点儿多。",
+                wrongPy: "Zhè jiàn yīfu bǐ nà jiàn guì yīdiǎnr duō.",
+                correct: ["这件衣服比那件贵一点儿。", "这件衣服比那件贵一点儿", "这件衣服比那件贵得多。", "这件衣服比那件贵得多"],
+                displayCorrect: "这件衣服比那件贵一点儿。",
+                explanation: "一点儿 (một chút - chênh lệch ít) và 得多 (hơn nhiều - chênh lệch lớn) mang nghĩa trái ngược nhau, chỉ được chọn một trong hai."
+            },
+            {
+                id: 19,
+                level: "HSK 2",
+                tag: "Phân biệt 的 và 得",
+                wrong: "他唱歌唱的很好听。",
+                wrongPy: "Tā chànggē chàng de hěn hǎotīng.",
+                correct: ["他唱歌唱得很好听。", "他唱歌唱得很好听"],
+                displayCorrect: "他唱歌唱得很好听。",
+                explanation: "Nhầm lẫn giữa 3 chữ 'de': Đứng sau động từ (唱) để nối với bổ ngữ đánh giá mức độ (很好听) phải dùng trợ từ 得 (nhân đôi), không dùng 的 (bạch)."
+            },
+            {
+                id: 20,
+                level: "HSK 2",
+                tag: "Cấu trúc 越来越...",
+                wrong: "我的汉语说得越来越好得。",
+                wrongPy: "Wǒ de hànyǔ shuō de yuèláiyuè hǎo de.",
+                correct: ["我的汉语说得越来越好。", "我的汉语说得越来越好", "我的汉语越来越好。", "我的汉语越来越好"],
+                displayCorrect: "我的汉语说得越来越好。",
+                explanation: "Cấu trúc 越来越 + Tính từ (ngày càng...) đã tự làm bổ ngữ trạng thái sau 说得, thừa chữ 得 ở cuối câu."
+            }
+        ];
+
+        // PHẦN 3: 10 ĐOẠN VĂN NGẮN ĐỌC HIỂU (Mỗi đoạn 3 câu hỏi)
+        const part3Data = [
+            {
+                id: 1,
+                title: "Đoạn 1: Giới thiệu bản thân & Học tập",
+                passage: "我叫大卫，今年二十岁。我是美国人，现在在北京大学学习汉语。我的汉语老师姓王，王老师教得非常好，我很喜欢上她的课。",
+                pinyin: "Wǒ jiào Dàwèi, jīnnián èrshí suì. Wǒ shì Měiguórén, xiànzài zài Běijīng Dàxué xuéxí hànyǔ. Wǒ de hànyǔ lǎoshī xìng Wáng, Wáng lǎoshī jiāo de fēicháng hǎo, wǒ hěn xǐhuan shàng tā de kè.",
+                translation: "Tôi tên là David, năm nay 20 tuổi. Tôi là người Mỹ, hiện tại đang học tiếng Trung tại Đại học Bắc Kinh. Giáo viên tiếng Trung của tôi họ Vương, cô Vương dạy rất giỏi, tôi rất thích học tiết của cô ấy.",
+                questions: [
+                    {
+                        q: "大卫是哪国人？",
+                        qPy: "Dàwèi shì nǎ guó rén?",
+                        sampleAns: "他是美国人。",
+                        keywords: ["美国"],
+                        explanation: "Dựa vào câu thứ 2: '我是美国人' (Tôi là người Mỹ)."
+                    },
+                    {
+                        q: "大卫现在在哪里学习汉语？",
+                        qPy: "Dàwèi xiànzài zài nǎlǐ xuéxí hànyǔ?",
+                        sampleAns: "他现在在北京大学学习汉语。",
+                        keywords: ["北京大学"],
+                        explanation: "Dựa vào vế sau câu 2: '现在在北京大学学习汉语' (hiện đang học tiếng Trung ở Đại học Bắc Kinh)."
+                    },
+                    {
+                        q: "大卫觉得王老师的课怎么样？",
+                        qPy: "Dàwèi juéde Wáng lǎoshī de kè zěnmeyàng?",
+                        sampleAns: "王老师教得非常好，大卫很喜欢上她的课。",
+                        keywords: ["好", "喜欢"],
+                        explanation: "Câu cuối sử dụng bổ ngữ trạng thái '教得非常好' (dạy rất tốt) và '很喜欢上她的课' (rất thích học tiết của cô)."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Đoạn 2: Đi mua sắm cuối tuần",
+                passage: "昨天是星期日，天气非常好。上午我和朋友一起去了商店。我在那儿买了一件红色的衣服和两条裤子。衣服有点儿贵，但是裤子很便宜。",
+                pinyin: "Zuótiān shì Xīngqīrì, tiānqì fēicháng hǎo. Shàngwǔ wǒ hé péngyou yīqǐ qù le shāngdiàn. Wǒ zài nàr mǎi le yī jiàn hóngsè de yīfu hé liǎng tiáo kùzi. Yīfu yǒudiǎnr guì, dànshì kùzi hěn piányi.",
+                translation: "Hôm qua là Chủ nhật, thời tiết rất đẹp. Buổi sáng tôi và bạn đã cùng nhau đi cửa hàng. Ở đó tôi đã mua một chiếc áo màu đỏ và hai chiếc quần. Áo hơi đắt một chút, nhưng quần thì rất rẻ.",
+                questions: [
+                    {
+                        q: "昨天天气怎么样？",
+                        qPy: "Zuótiān tiānqì zěnmeyàng?",
+                        sampleAns: "昨天天气非常好。",
+                        keywords: ["好"],
+                        explanation: "Ngay câu đầu tiên: '昨天是星期日，天气非常好' (Thời tiết rất tốt/đẹp)."
+                    },
+                    {
+                        q: "我在商店买了什么？",
+                        qPy: "Wǒ zài shāngdiàn mǎi le shénme?",
+                        sampleAns: "我买了一件红色的衣服和两条裤子。",
+                        keywords: ["衣服", "裤子"],
+                        explanation: "Chú ý lượng từ: '一件红色的衣服' (1 cái áo đỏ) và '两条裤子' (2 cái quần - lượng từ 条 dùng cho vật dài như quần, váy, sông)."
+                    },
+                    {
+                        q: "衣服和裤子哪个便宜？",
+                        qPy: "Yīfu hé kùzi nǎge piányi?",
+                        sampleAns: "裤子很便宜（裤子比衣服便宜）。",
+                        keywords: ["裤子"],
+                        explanation: "Câu cuối nêu rõ: '衣服有点儿贵，但是裤子很便宜' (Áo hơi đắt, nhưng quần rất rẻ)."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Đoạn 3: Sở thích thể thao của em trai",
+                passage: "我的弟弟今年十岁，他非常喜欢运动。他每天下午放学后都去踢足球。他踢得很好，经常跟朋友们比赛。",
+                pinyin: "Wǒ de dìdi jīnnián shí suì, tā fēicháng xǐhuan yùndòng. Tā měitiān xiàwǔ fàngxué hòu dōu qù tī zúqiú. Tā tī de hěn hǎo, jīngcháng gēn péngyoumen bǐsài.",
+                translation: "Em trai của tôi năm nay 10 tuổi, em ấy rất thích vận động thể thao. Mỗi buổi chiều sau khi tan học em ấy đều đi đá bóng. Em ấy đá rất giỏi, thường xuyên thi đấu cùng các bạn.",
+                questions: [
+                    {
+                        q: "弟弟今年几岁？",
+                        qPy: "Dìdi jīnnián jǐ suì?",
+                        sampleAns: "弟弟今年十岁。",
+                        keywords: ["十", "10"],
+                        explanation: "Thông tin ở câu 1: '我的弟弟今年十岁' (Năm nay 10 tuổi)."
+                    },
+                    {
+                        q: "弟弟下午放学后做什么？",
+                        qPy: "Dìdi xiàwǔ fàngxué hòu zuò shénme?",
+                        sampleAns: "他每天下午放学后都去踢足球。",
+                        keywords: ["踢足球", "足球"],
+                        explanation: "Câu 2: '每天下午放学后都去踢足球' (Mỗi chiều tan học đều đi đá bóng)."
+                    },
+                    {
+                        q: "弟弟踢足球踢得怎么样？",
+                        qPy: "Dìdi tī zúqiú tī de zěnmeyàng?",
+                        sampleAns: "他踢得很好。",
+                        keywords: ["很好", "好"],
+                        explanation: "Câu 3 dùng bổ ngữ trạng thái: '他踢得很好' (Em ấy đá rất tốt/giỏi)."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Đoạn 4: Bạn thân Mary",
+                passage: "我有一个好朋友叫玛丽。她比我大两岁，个子也比我高。玛丽非常喜欢吃中国菜，特别是饺子和面条。她每周五都会去中国饭馆吃一次饭。",
+                pinyin: "Wǒ yǒu yī gè hǎo péngyou jiào Mǎlì. Tā bǐ wǒ dà liǎng suì, gèzi yě bǐ wǒ gāo. Mǎlì fēicháng xǐhuan chī Zhōngguó cài, tèbié shì jiǎozi hé miàntiáo. Tā měi Zhōuwǔ dōu huì qù Zhōngguó fànguǎn chī yī cì fàn.",
+                translation: "Tôi có một người bạn tốt tên là Mary. Cô ấy lớn hơn tôi 2 tuổi, vóc dáng cũng cao hơn tôi. Mary rất thích ăn món Trung Quốc, đặc biệt là sủi cảo và mì sợi. Mỗi thứ Sáu cô ấy đều đến nhà hàng Trung Quốc ăn cơm một lần.",
+                questions: [
+                    {
+                        q: "玛丽和我谁的年龄大？",
+                        qPy: "Mǎlì hé wǒ shéi de niánlíng dà?",
+                        sampleAns: "玛丽的年龄大（她比我大两岁）。",
+                        keywords: ["玛丽"],
+                        explanation: "Dùng cấu trúc so sánh 比: '她比我大两岁' (Cô ấy lớn hơn tôi 2 tuổi)."
+                    },
+                    {
+                        q: "玛丽喜欢吃什么中国菜？",
+                        qPy: "Mǎlì xǐhuan chī shénme Zhōngguó cài?",
+                        sampleAns: "她特别喜欢吃饺子和面条。",
+                        keywords: ["饺子", "面条"],
+                        explanation: "Câu 3 nêu rõ: '特别是饺子和面条' (đặc biệt là sủi cảo và mì sợi)."
+                    },
+                    {
+                        q: "玛丽每周五去哪里吃饭？",
+                        qPy: "Mǎlì měi Zhōuwǔ qù nǎlǐ chīfàn?",
+                        sampleAns: "她去中国饭馆吃饭。",
+                        keywords: ["中国饭馆", "饭馆"],
+                        explanation: "Câu cuối: '每周五都会去中国饭馆吃一次饭' (đến nhà hàng Trung Quốc ăn cơm)."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Đoạn 5: Đi làm buổi sáng",
+                passage: "今天早上我起床很晚，因为路上车太多，所以我坐出租车去公司。虽然花了五十块钱，但是没有迟到。经理还夸我今天工作得很认真。",
+                pinyin: "Jīntiān zǎoshang wǒ qǐchuáng hěn wǎn, yīnwèi lùshàng chē tài duō, suǒyǐ wǒ zuò chūzūchē qù gōngsī. Suīrán huā le wǔshí kuài qián, dànshì méiyǒu chídào. Jīnglǐ hái kuā wǒ jīntiān gōngzuò de hěn rènzhēn.",
+                translation: "Sáng nay tôi thức dậy rất muộn, vì trên đường xe cộ quá đông nên tôi bắt taxi đến công ty. Tuy tốn 50 tệ nhưng không bị đi muộn. Giám đốc còn khen tôi hôm nay làm việc rất chăm chỉ/nghiêm túc.",
+                questions: [
+                    {
+                        q: "我今天早上是怎么去公司的？",
+                        qPy: "Wǒ jīntiān zǎoshang shì zěnme qù gōngsī de?",
+                        sampleAns: "我是坐出租车去公司的。",
+                        keywords: ["出租车"],
+                        explanation: "Dựa vào mệnh đề kết quả: '所以我坐出租车去公司' (nên tôi đi taxi đến công ty)."
+                    },
+                    {
+                        q: "我迟到了没有？",
+                        qPy: "Wǒ chídào le méiyǒu?",
+                        sampleAns: "没有迟到。",
+                        keywords: ["没有", "没"],
+                        explanation: "Câu 2: '虽然花了五十块钱，但是没有迟到' (tuy tốn 50 tệ nhưng không bị trễ)."
+                    },
+                    {
+                        q: "经理对我的工作有什么评价？",
+                        qPy: "Jīnglǐ duì wǒ de gōngzuò yǒu shénme píngjià?",
+                        sampleAns: "经理夸我今天工作得很认真。",
+                        keywords: ["认真"],
+                        explanation: "Câu cuối dùng bổ ngữ trạng thái: '工作得很认真' (làm việc rất chăm chỉ/nghiêm túc)."
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Đoạn 6: Lời dặn của mẹ",
+                passage: "桌子上放着一杯热茶和几个苹果。这是妈妈刚才买回来的。妈妈让我多吃水果，少喝咖啡，因为水果对身体很好。",
+                pinyin: "Zhuōzi shàng fàng zhe yī bēi rè chá hé jǐ gè píngguǒ. Zhè shì māma gāngcái mǎi huílái de. Māma ràng wǒ duō chī shuǐguǒ, shǎo hē kāfēi, yīnwèi shuǐguǒ duì shēntǐ hěn hǎo.",
+                translation: "Trên bàn đang đặt một cốc trà nóng và mấy quả táo. Đây là đồ mẹ vừa mới mua về. Mẹ bảo tôi ăn nhiều hoa quả, uống ít cà phê, vì hoa quả rất tốt cho sức khỏe.",
+                questions: [
+                    {
+                        q: "桌子上有什么？",
+                        qPy: "Zhuōzi shàng yǒu shénme?",
+                        sampleAns: "桌子上有一杯热茶和几个苹果。",
+                        keywords: ["茶", "苹果"],
+                        explanation: "Câu 1 dùng trợ từ động thái 着: '桌子上放着一杯热茶和几个苹果' (Trên bàn đặt một cốc trà nóng và mấy quả táo)."
+                    },
+                    {
+                        q: "谁买回来的东西？",
+                        qPy: "Shéi mǎi huílái de dōngxi?",
+                        sampleAns: "是妈妈买回来的。",
+                        keywords: ["妈妈"],
+                        explanation: "Câu 2 dùng bổ ngữ xu hướng kép 买回来: '这是妈妈刚才买回来的' (Đây là mẹ vừa mua về)."
+                    },
+                    {
+                        q: "妈妈为什么让我多吃水果？",
+                        qPy: "Māma wèishénme ràng wǒ duō chī shuǐguǒ?",
+                        sampleAns: "因为水果对身体很好。",
+                        keywords: ["身体", "好"],
+                        explanation: "Mệnh đề sau 因为: '因为水果对身体很好' (vì hoa quả rất tốt cho cơ thể/sức khỏe)."
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "Đoạn 7: Cậu bé ngăn nắp Tiểu Cương",
+                passage: "小刚的房间非常干净。他每天早上起床后都会把被子叠好，把书桌收拾得整整齐齐。妈妈经常说他是一个好孩子。",
+                pinyin: "Xiǎogāng de fángjiān fēicháng gānjìng. Tā měitiān zǎoshang qǐchuáng hòu dōu huì bǎ bèizi dié hǎo, bǎ shūzhuō shōushi de zhěngzhěngqíqí. Māma jīngcháng shuō tā shì yī gè hǎo háizi.",
+                translation: "Căn phòng của Tiểu Cương vô cùng sạch sẽ. Mỗi sáng sau khi thức dậy cậu ấy đều gấp chăn gọn gàng, thu dọn bàn học ngăn nắp tinh tươm. Mẹ thường nói cậu ấy là một đứa trẻ ngoan.",
+                questions: [
+                    {
+                        q: "小刚的房间怎么样？",
+                        qPy: "Xiǎogāng de fángjiān zěnmeyàng?",
+                        sampleAns: "他的房间非常干净。",
+                        keywords: ["干净"],
+                        explanation: "Câu 1: '小刚的房间非常干净' (Phòng của Tiểu Cương rất sạch sẽ)."
+                    },
+                    {
+                        q: "小刚早上起床后做什么？",
+                        qPy: "Xiǎogāng zǎoshang qǐchuáng hòu zuò shénme?",
+                        sampleAns: "他把被子叠好，把书桌收拾得整整齐齐。",
+                        keywords: ["被子", "书桌"],
+                        explanation: "Câu 2 sử dụng hai câu chữ 把 liên tiếp: '把被子叠好' (gấp chăn xong) và '把书桌收拾得整整齐齐' (dọn bàn học gọn gàng)."
+                    },
+                    {
+                        q: "妈妈对小刚怎么看？",
+                        qPy: "Māma duì Xiǎogāng zěnme kàn?",
+                        sampleAns: "妈妈说他是一个好孩子。",
+                        keywords: ["好孩子"],
+                        explanation: "Câu cuối: '妈妈经常说他是一个好孩子' (Mẹ thường nói cậu ấy là một đứa trẻ tốt/ngoan)."
+                    }
+                ]
+            },
+            {
+                id: 8,
+                title: "Đoạn 8: Tiến độ học tiếng Trung",
+                passage: "这本汉语书一共有二十课。我上个月开始学，现在已经学到第十五课了。我觉得汉字写起来有点儿难，但是听力和口语越来越好。",
+                pinyin: "Zhè běn hànyǔ shū yīgòng yǒu èrshí kè. Wǒ shàng gè yuè kāishǐ xué, xiànzài yǐjīng xué dào dì-shíwǔ kè le. Wǒ juéde hànzì xiě qǐlái yǒudiǎnr nán, dànshì tīnglì hé kǒuyǔ yuèláiyuè hǎo.",
+                translation: "Quyển sách tiếng Trung này có tổng cộng 20 bài. Tôi bắt đầu học từ tháng trước, hiện tại đã học đến bài thứ 15 rồi. Tôi cảm thấy chữ Hán viết ra thì hơi khó một chút, nhưng kỹ năng nghe và nói ngày càng tốt hơn.",
+                questions: [
+                    {
+                        q: "这本汉语书有多少课？",
+                        qPy: "Zhè běn hànyǔ shū yǒu duōshao kè?",
+                        sampleAns: "一共有二十课。",
+                        keywords: ["二十", "20"],
+                        explanation: "Câu 1: '一共有二十课' (Tổng cộng có 20 bài)."
+                    },
+                    {
+                        q: "我现在学到第几课了？",
+                        qPy: "Wǒ xiànzài xué dào dì-jǐ kè le?",
+                        sampleAns: "现在已经学到第十五课了。",
+                        keywords: ["十五", "15"],
+                        explanation: "Câu 2 dùng số thứ tự 第: '已经学到第十五课了' (đã học đến bài thứ 15 rồi)."
+                    },
+                    {
+                        q: "我觉得哪部分比较难？",
+                        qPy: "Wǒ juéde nǎ bùfen bǐjiào nán?",
+                        sampleAns: "我觉得写汉字有点儿难。",
+                        keywords: ["汉字", "写"],
+                        explanation: "Câu 3: '我觉得汉字写起来有点儿难' (Tôi thấy chữ Hán viết hơi khó)."
+                    }
+                ]
+            },
+            {
+                id: 9,
+                title: "Đoạn 9: Ngày tuyết rơi trong công viên",
+                passage: "下雪了，外面非常冷。但是公园里有很多小孩子在堆雪人、玩游戏。他们穿着厚厚的衣服，脸上带着开心的笑容，玩得高兴极了。",
+                pinyin: "Xià xuě le, wàimiàn fēicháng lěng. Dànshì gōngyuán lǐ yǒu hěn duō xiǎo háizi zài duī xuěrén, wán yóuxì. Tāmen chuān zhe hòuhòu de yīfu, liǎn shàng dài zhe kāixīn de xiàoróng, wán de gāoxìng jíle.",
+                translation: "Tuyết rơi rồi, bên ngoài vô cùng lạnh. Nhưng trong công viên có rất nhiều trẻ nhỏ đang đắp người tuyết, chơi trò chơi. Chúng mặc quần áo dày cộp, trên mặt nở nụ cười vui vẻ, chơi vui cực kỳ.",
+                questions: [
+                    {
+                        q: "外面的天气怎么样？",
+                        qPy: "Wàimiàn de tiānqì zěnmeyàng?",
+                        sampleAns: "下雪了，非常冷。",
+                        keywords: ["冷", "下雪"],
+                        explanation: "Câu 1: '下雪了，外面非常冷' (Tuyết rơi rồi, bên ngoài rất lạnh)."
+                    },
+                    {
+                        q: "公园里的小孩子在做什么？",
+                        qPy: "Gōngyuán lǐ de xiǎo háizi zài zuò shénme?",
+                        sampleAns: "他们在堆雪人、玩游戏。",
+                        keywords: ["雪人", "游戏"],
+                        explanation: "Câu 2 dùng phó từ 在 chỉ hành động đang diễn ra: '在堆雪人、玩游戏' (đang đắp người tuyết, chơi trò chơi)."
+                    },
+                    {
+                        q: "他们玩得怎么样？",
+                        qPy: "Tāmen wán de zěnmeyàng?",
+                        sampleAns: "他们玩得高兴极了。",
+                        keywords: ["高兴"],
+                        explanation: "Cuối đoạn văn dùng bổ ngữ trạng thái + 极了: '玩得高兴极了' (chơi vui cực kỳ)."
+                    }
+                ]
+            },
+            {
+                id: 10,
+                title: "Đoạn 10: Công việc của bác sĩ Lý",
+                passage: "李医生是一家大医院的医生。他工作非常忙，每天都要看很多病人。虽然很累，但是他觉得能帮助别人是一件很高兴的事。",
+                pinyin: "Lǐ yīshēng shì yī jiā dà yīyuàn de yīshēng. Tā gōngzuò fēicháng máng, měitiān dōu yào kàn hěn duō bìngrén. Suīrán hěn lèi, dànshì tā juéde néng bāngzhù biérén shì yī jiàn hěn gāoxìng de shì.",
+                translation: "Bác sĩ Lý là bác sĩ của một bệnh viện lớn. Công việc của anh ấy vô cùng bận rộn, mỗi ngày đều phải khám cho rất nhiều bệnh nhân. Tuy rất mệt nhưng anh ấy cảm thấy có thể giúp đỡ người khác là một việc rất vui.",
+                questions: [
+                    {
+                        q: "李医生在哪里工作？",
+                        qPy: "Lǐ yīshēng zài nǎlǐ gōngzuò?",
+                        sampleAns: "他在一家大医院工作。",
+                        keywords: ["医院"],
+                        explanation: "Câu 1 dùng lượng từ 家 cho cơ quan/bệnh viện: '一家大医院' (một bệnh viện lớn)."
+                    },
+                    {
+                        q: "李医生每天忙什么？",
+                        qPy: "Lǐ yīshēng měitiān máng shénme?",
+                        sampleAns: "他每天都要看很多病人。",
+                        keywords: ["病人"],
+                        explanation: "Câu 2: '每天都要看很多病人' (mỗi ngày đều phải khám rất nhiều bệnh nhân)."
+                    },
+                    {
+                        q: "李医生对自己的工作有什么看法？",
+                        qPy: "Lǐ yīshēng duì zìjǐ de gōngzuò yǒu shénme kànfǎ?",
+                        sampleAns: "他觉得虽然很累，但是能帮助别人是一件很高兴的事。",
+                        keywords: ["帮助", "高兴"],
+                        explanation: "Câu 3 sử dụng cặp liên từ 虽然...但是... và lượng từ 件 cho sự việc (一件事)."
+                    }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // TRẠNG THÁI ỨNG DỤNG (STATE)
+        // =========================================================================
+        let showPinyin = true;
+        // Lưu trữ lựa chọn người dùng cho Phần 1: { questionId: [index1, index2, ...] }
+        let part1Selections = {};
+        let part1Results = {}; // { questionId: boolean }
+        let part2Results = {}; // { questionId: boolean }
+        let part3Results = {}; // { "passageId-qIndex": boolean }
+
+        // =========================================================================
+        // KHỞI TẠO GIAO DIỆN KHI TẢI TRANG
+        // =========================================================================
+        window.onload = function () {
+            initPart1();
+            initPart2();
+            initPart3();
+            updateGlobalScore();
+        };
+
+        // Chuyển đổi giữa 3 Tabs
+        function switchTab(tabName) {
+            ['part1', 'part2', 'part3'].forEach(t => {
+                const sec = document.getElementById(`section-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    sec.classList.remove('hidden');
+                    btn.classList.add('border-gold-400', 'text-gold-400', 'bg-navy-900/60');
+                    btn.classList.remove('border-transparent', 'text-silver-400');
+                } else {
+                    sec.classList.add('hidden');
+                    btn.classList.remove('border-gold-400', 'text-gold-400', 'bg-navy-900/60');
+                    btn.classList.add('border-transparent', 'text-silver-400');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Bật / Tắt Pinyin toàn trang
+        function togglePinyin() {
+            showPinyin = !showPinyin;
+            const label = document.getElementById('pinyinBtnLabel');
+            if (showPinyin) {
+                document.body.classList.remove('hide-pinyin');
+                label.textContent = "Pinyin: BẬT";
+                showToast("Đã bật hiển thị phiên âm Pinyin");
+            } else {
+                document.body.classList.add('hide-pinyin');
+                label.textContent = "Pinyin: TẮT";
+                showToast("Đã ẩn phiên âm Pinyin để luyện đọc chữ Hán");
+            }
+        }
+
+        // Hiển thị thông báo nhanh (Toast)
+        let toastTimeout;
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            const msgEl = document.getElementById('toastMessage');
+            msgEl.textContent = msg;
+            box.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('translate-y-20', 'opacity-0');
+            }, 2800);
+        }
+
+        // Cập nhật điểm tổng trên thanh Header (Tổng 70 câu: 20 + 20 + 30)
+        function updateGlobalScore() {
+            const s1 = Object.values(part1Results).filter(Boolean).length;
+            const s2 = Object.values(part2Results).filter(Boolean).length;
+            const s3 = Object.values(part3Results).filter(Boolean).length;
+            const total = s1 + s2 + s3;
+            document.getElementById('globalScoreDisplay').textContent = `Điểm: ${total} / 70`;
+        }
+
+        // Hàm chuẩn hóa chuỗi tiếng Trung khi so sánh (bỏ dấu câu, khoảng trắng)
+        function normalizeChinese(str) {
+            if (!str) return "";
+            return str
+                .replace(/[\s\u3000.,?!，。？！；：""''、（）()]/g, "")
+                .trim();
+        }
+
+        // =========================================================================
+        // LOGIC PHẦN 1: SẮP XẾP CÂU
+        // =========================================================================
+        function initPart1() {
+            const container = document.getElementById('part1-container');
+            container.innerHTML = '';
+
+            part1Data.forEach(item => {
+                part1Selections[item.id] = [];
+                const card = document.createElement('div');
+                card.id = `p1-card-${item.id}`;
+                card.className = "bg-navy-800 border border-silver-300/15 rounded-2xl p-5 shadow-md transition-all";
+
+                card.innerHTML = `
+                    <!-- Tiêu đề câu hỏi -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-gold-500 text-navy-950 font-bold text-xs flex items-center justify-center">
+                                ${item.id}
+                            </span>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-navy-900 text-gold-400 border border-gold-500/30">
+                                ${item.level}
+                            </span>
+                            <span class="text-xs text-silver-400 font-medium">${item.tag}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="clearPart1Question(${item.id})" class="text-xs text-silver-400 hover:text-silver-200 px-2.5 py-1 rounded-lg bg-navy-900/70 hover:bg-navy-900 transition">
+                                <i class="fa-solid fa-eraser mr-1"></i> Xóa chọn
+                            </button>
+                            <button onclick="checkSinglePart1(${item.id})" class="text-xs font-semibold text-navy-950 bg-gold-400 hover:bg-gold-500 px-3 py-1 rounded-lg transition">
+                                Kiểm tra câu này
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Khu vực câu ghép của học viên -->
+                    <div class="mb-3">
+                        <div class="text-xs text-silver-400 mb-1.5">Câu của bạn (Bấm vào thẻ từ đã chọn để bỏ ra):</div>
+                        <div id="p1-selected-${item.id}" class="min-h-[54px] p-2.5 rounded-xl bg-navy-950/80 border border-dashed border-gold-500/40 flex flex-wrap items-center gap-2">
+                            <span class="text-xs text-silver-400/60 italic px-2">Chưa chọn từ nào...</span>
+                        </div>
+                    </div>
+
+                    <!-- Kho thẻ từ cho sẵn -->
+                    <div>
+                        <div class="text-xs text-silver-400 mb-1.5">Các từ cho sẵn:</div>
+                        <div id="p1-pool-${item.id}" class="flex flex-wrap gap-2">
+                            ${item.words.map((w, idx) => `
+                                <button id="p1-word-${item.id}-${idx}" onclick="selectPart1Word(${item.id}, ${idx})" 
+                                    class="word-chip px-3.5 py-2 rounded-xl bg-navy-700 hover:bg-navy-900 border border-silver-300/25 text-silver-100 flex flex-col items-center justify-center min-w-[52px]">
+                                    <span class="pinyin-text text-[11px] text-gold-400 leading-tight mb-0.5">${w.py}</span>
+                                    <span class="chinese-text text-base font-medium leading-tight">${w.zh}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Khu vực hiển thị Đáp án & Giải thích (Ẩn mặc định) -->
+                    <div id="p1-feedback-${item.id}" class="hidden mt-4 pt-4 border-t border-silver-300/15 explanation-box"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectPart1Word(qId, wordIdx) {
+            if (part1Selections[qId].includes(wordIdx)) return;
+            part1Selections[qId].push(wordIdx);
+            renderPart1SelectedArea(qId);
+        }
+
+        function removePart1Word(qId, positionInSelected) {
+            part1Selections[qId].splice(positionInSelected, 1);
+            renderPart1SelectedArea(qId);
+        }
+
+        function clearPart1Question(qId) {
+            part1Selections[qId] = [];
+            delete part1Results[qId];
+            renderPart1SelectedArea(qId);
+            const fb = document.getElementById(`p1-feedback-${qId}`);
+            fb.classList.add('hidden');
+            const card = document.getElementById(`p1-card-${qId}`);
+            card.className = "bg-navy-800 border border-silver-300/15 rounded-2xl p-5 shadow-md transition-all";
+            updateGlobalScore();
+        }
+
+        function renderPart1SelectedArea(qId) {
+            const item = part1Data.find(x => x.id === qId);
+            const selectedIndices = part1Selections[qId];
+            const selectedBox = document.getElementById(`p1-selected-${qId}`);
+
+            // Cập nhật trạng thái nút ở kho từ
+            item.words.forEach((_, idx) => {
+                const poolBtn = document.getElementById(`p1-word-${qId}-${idx}`);
+                if (selectedIndices.includes(idx)) {
+                    poolBtn.disabled = true;
+                    poolBtn.classList.add('opacity-30', 'cursor-not-allowed');
+                } else {
+                    poolBtn.disabled = false;
+                    poolBtn.classList.remove('opacity-30', 'cursor-not-allowed');
+                }
+            });
+
+            // Vẽ lại các thẻ đã chọn
+            if (selectedIndices.length === 0) {
+                selectedBox.innerHTML = `<span class="text-xs text-silver-400/60 italic px-2">Chưa chọn từ nào...</span>`;
+                return;
+            }
+
+            selectedBox.innerHTML = selectedIndices.map((wordIdx, pos) => {
+                const w = item.words[wordIdx];
+                return `
+                    <button onclick="removePart1Word(${qId}, ${pos})" 
+                        class="word-chip px-3 py-1.5 rounded-lg bg-gradient-to-b from-gold-400 to-gold-500 text-navy-950 font-semibold flex flex-col items-center justify-center shadow">
+                        <span class="pinyin-text text-[10px] text-navy-900 font-bold leading-tight">${w.py}</span>
+                        <span class="chinese-text text-base font-bold leading-tight">${w.zh}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function checkSinglePart1(qId) {
+            const item = part1Data.find(x => x.id === qId);
+            const userSentence = part1Selections[qId].map(idx => item.words[idx].zh).join('');
+            const isCorrect = item.acceptable.some(ans => normalizeChinese(ans) === normalizeChinese(userSentence));
+            
+            part1Results[qId] = isCorrect;
+            updateGlobalScore();
+
+            const card = document.getElementById(`p1-card-${qId}`);
+            const fb = document.getElementById(`p1-feedback-${qId}`);
+
+            card.className = isCorrect 
+                ? "bg-navy-800 border-2 border-emerald-500/70 rounded-2xl p-5 shadow-md transition-all"
+                : "bg-navy-800 border-2 border-rose-500/70 rounded-2xl p-5 shadow-md transition-all";
+
+            fb.classList.remove('hidden');
+            fb.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="mt-0.5 text-lg ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                        <i class="fa-solid ${isCorrect ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
+                    </div>
+                    <div class="flex-1 space-y-1.5 text-sm">
+                        <div class="font-bold ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${isCorrect ? 'Chính xác! Làm tốt lắm.' : (userSentence ? 'Chưa chính xác!' : 'Bạn chưa ghép câu.')}
+                        </div>
+                        <div class="bg-navy-950/70 p-3 rounded-xl border border-gold-500/30">
+                            <div class="text-xs text-silver-400">Đáp án chuẩn:</div>
+                            <div class="chinese-text text-lg font-bold text-gold-400 mt-0.5">${item.answer}</div>
+                            <div class="pinyin-text text-xs text-silver-300 mt-0.5">${item.pinyinAnswer}</div>
+                            <div class="text-xs text-silver-200 italic mt-1">Nghĩa: "${item.meaning}"</div>
+                        </div>
+                        <div class="text-silver-300 text-xs leading-relaxed pt-1">
+                            <span class="font-semibold text-gold-400"><i class="fa-solid fa-lightbulb mr-1"></i>Giải thích ngữ pháp:</span> ${item.explanation}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkAllPart1() {
+            let correctCount = 0;
+            part1Data.forEach(item => {
+                checkSinglePart1(item.id);
+                if (part1Results[item.id]) correctCount++;
+            });
+            document.getElementById('part1-summary').innerHTML = `
+                Kết quả Phần 1: Bạn làm đúng <span class="text-gold-400 font-bold text-base">${correctCount} / 20</span> câu!
+            `;
+            showToast(`Đã chấm xong Phần 1: Đúng ${correctCount}/20 câu`);
+        }
+
+        function resetPart1() {
+            part1Selections = {};
+            part1Results = {};
+            initPart1();
+            updateGlobalScore();
+            document.getElementById('part1-summary').textContent = "Hoàn thành các câu trên và nhấn nút bên cạnh để chấm điểm Phần 1.";
+            showToast("Đã làm mới toàn bộ Phần 1");
+        }
+
+        // =========================================================================
+        // LOGIC PHẦN 2: SỬA CÂU SAI
+        // =========================================================================
+        function initPart2() {
+            const container = document.getElementById('part2-container');
+            container.innerHTML = '';
+
+            part2Data.forEach(item => {
+                const card = document.createElement('div');
+                card.id = `p2-card-${item.id}`;
+                card.className = "bg-navy-800 border border-silver-300/15 rounded-2xl p-5 shadow-md transition-all";
+
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-gold-500 text-navy-950 font-bold text-xs flex items-center justify-center">
+                                ${item.id}
+                            </span>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-navy-900 text-gold-400 border border-gold-500/30">
+                                ${item.level}
+                            </span>
+                            <span class="text-xs text-silver-400 font-medium">Chủ điểm: ${item.tag}</span>
+                        </div>
+                        <button onclick="checkSinglePart2(${item.id})" class="text-xs font-semibold text-navy-950 bg-gold-400 hover:bg-gold-500 px-3 py-1 rounded-lg transition">
+                            Kiểm tra câu này
+                        </button>
+                    </div>
+
+                    <!-- Câu sai -->
+                    <div class="p-3.5 rounded-xl bg-rose-950/30 border border-rose-500/30 mb-3">
+                        <div class="text-xs font-semibold text-rose-400 mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Câu sai cần sửa:
+                        </div>
+                        <div class="chinese-text text-lg font-medium text-silver-100">${item.wrong}</div>
+                        <div class="pinyin-text text-xs text-silver-400 mt-0.5">${item.wrongPy}</div>
+                    </div>
+
+                    <!-- Ô nhập câu đúng -->
+                    <div>
+                        <label for="p2-input-${item.id}" class="block text-xs text-silver-300 mb-1.5">Nhập câu sửa lại cho đúng (Chữ Hán):</label>
+                        <input type="text" id="p2-input-${item.id}" placeholder="Gõ câu tiếng Trung đúng tại đây..." 
+                            onkeydown="if(event.key==='Enter') checkSinglePart2(${item.id})"
+                            class="chinese-text w-full px-4 py-2.5 rounded-xl bg-navy-950 border border-silver-300/25 focus:border-gold-400 focus:outline-none text-silver-100 text-base placeholder:text-silver-400/40 transition">
+                    </div>
+
+                    <!-- Phản hồi -->
+                    <div id="p2-feedback-${item.id}" class="hidden mt-4 pt-4 border-t border-silver-300/15 explanation-box"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkSinglePart2(qId) {
+            const item = part2Data.find(x => x.id === qId);
+            const inputVal = document.getElementById(`p2-input-${qId}`).value;
+            const normUser = normalizeChinese(inputVal);
+            
+            const isCorrect = normUser.length > 0 && item.correct.some(ans => normalizeChinese(ans) === normUser);
+            part2Results[qId] = isCorrect;
+            updateGlobalScore();
+
+            const card = document.getElementById(`p2-card-${qId}`);
+            const fb = document.getElementById(`p2-feedback-${qId}`);
+
+            card.className = isCorrect 
+                ? "bg-navy-800 border-2 border-emerald-500/70 rounded-2xl p-5 shadow-md transition-all"
+                : "bg-navy-800 border-2 border-rose-500/70 rounded-2xl p-5 shadow-md transition-all";
+
+            fb.classList.remove('hidden');
+            fb.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="mt-0.5 text-lg ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                        <i class="fa-solid ${isCorrect ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
+                    </div>
+                    <div class="flex-1 space-y-1.5 text-sm">
+                        <div class="font-bold ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${isCorrect ? 'Chính xác! Bạn đã sửa đúng lỗi ngữ pháp.' : (normUser ? 'Chưa chính xác! Hãy đối chiếu đáp án chuẩn bên dưới.' : 'Bạn chưa nhập câu trả lời.')}
+                        </div>
+                        <div class="bg-navy-950/70 p-3 rounded-xl border border-gold-500/30">
+                            <div class="text-xs text-silver-400">Câu đúng chuẩn:</div>
+                            <div class="chinese-text text-lg font-bold text-gold-400 mt-0.5">${item.displayCorrect}</div>
+                        </div>
+                        <div class="text-silver-300 text-xs leading-relaxed pt-1">
+                            <span class="font-semibold text-gold-400"><i class="fa-solid fa-lightbulb mr-1"></i>Phân tích lỗi sai:</span> ${item.explanation}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkAllPart2() {
+            let correctCount = 0;
+            part2Data.forEach(item => {
+                checkSinglePart2(item.id);
+                if (part2Results[item.id]) correctCount++;
+            });
+            document.getElementById('part2-summary').innerHTML = `
+                Kết quả Phần 2: Bạn sửa đúng <span class="text-gold-400 font-bold text-base">${correctCount} / 20</span> câu!
+            `;
+            showToast(`Đã chấm xong Phần 2: Đúng ${correctCount}/20 câu`);
+        }
+
+        function resetPart2() {
+            part2Results = {};
+            initPart2();
+            updateGlobalScore();
+            document.getElementById('part2-summary').textContent = "Nhập câu sửa lỗi và nhấn nút kiểm tra để xem đáp án và phân tích lỗi sai.";
+            showToast("Đã làm mới toàn bộ Phần 2");
+        }
+
+        // =========================================================================
+        // LOGIC PHẦN 3: ĐỌC HIỂU ĐOẠN VĂN
+        // =========================================================================
+        function initPart3() {
+            const container = document.getElementById('part3-container');
+            container.innerHTML = '';
+
+            part3Data.forEach(passage => {
+                const card = document.createElement('div');
+                card.id = `p3-card-${passage.id}`;
+                card.className = "bg-navy-800 border border-gold-500/25 rounded-2xl p-5 sm:p-6 shadow-lg";
+
+                card.innerHTML = `
+                    <!-- Header đoạn văn -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-silver-300/15">
+                        <h3 class="text-base font-bold text-gold-400 flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-md bg-gold-500 text-navy-950 text-xs font-extrabold">#${passage.id}</span>
+                            <span>${passage.title}</span>
+                        </h3>
+                        <button onclick="checkPassage(${passage.id})" class="text-xs font-bold text-navy-950 bg-gold-400 hover:bg-gold-500 px-3.5 py-1.5 rounded-xl shadow transition">
+                            <i class="fa-solid fa-check mr-1"></i> Kiểm tra đoạn này
+                        </button>
+                    </div>
+
+                    <!-- Nội dung đoạn văn -->
+                    <div class="p-4 sm:p-5 rounded-xl bg-navy-950/90 border border-silver-300/15 mb-5">
+                        <p class="chinese-text text-lg sm:text-xl leading-relaxed text-silver-100 tracking-wide">
+                            ${passage.passage}
+                        </p>
+                        <p class="pinyin-text text-xs sm:text-sm text-gold-400/90 leading-relaxed mt-2.5 pt-2.5 border-t border-silver-300/10">
+                            ${passage.pinyin}
+                        </p>
+                        <!-- Bản dịch tiếng Việt (chỉ hiện sau khi bấm kiểm tra) -->
+                        <div id="p3-trans-${passage.id}" class="hidden mt-3 pt-3 border-t border-gold-500/30 text-xs sm:text-sm text-silver-300 italic explanation-box">
+                            <span class="font-semibold text-gold-400 not-italic"><i class="fa-solid fa-language mr-1"></i>Dịch nghĩa:</span> ${passage.translation}
+                        </div>
+                    </div>
+
+                    <!-- 3 Câu hỏi đọc hiểu -->
+                    <div class="space-y-4">
+                        ${passage.questions.map((qObj, qIdx) => `
+                            <div class="p-4 rounded-xl bg-navy-900/70 border border-silver-300/10">
+                                <div class="flex items-start gap-2.5 mb-2">
+                                    <span class="px-2 py-0.5 rounded bg-navy-700 text-gold-400 font-bold text-xs mt-0.5">Câu ${qIdx + 1}</span>
+                                    <div>
+                                        <div class="chinese-text text-base font-semibold text-silver-100">${qObj.q}</div>
+                                        <div class="pinyin-text text-xs text-silver-400">${qObj.qPy}</div>
+                                    </div>
+                                </div>
+                                <input type="text" id="p3-input-${passage.id}-${qIdx}" placeholder="Nhập câu trả lời bằng tiếng Trung..." 
+                                    class="chinese-text w-full px-3.5 py-2 rounded-lg bg-navy-950 border border-silver-300/20 focus:border-gold-400 focus:outline-none text-silver-100 text-sm placeholder:text-silver-400/40 transition">
+                                
+                                <!-- Đáp án gợi ý từng câu -->
+                                <div id="p3-fb-${passage.id}-${qIdx}" class="hidden mt-3 pt-2.5 border-t border-silver-300/10 text-xs space-y-1 explanation-box"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkPassage(passageId) {
+            const passage = part3Data.find(x => x.id === passageId);
+            // Hiện bản dịch đoạn văn
+            document.getElementById(`p3-trans-${passageId}`).classList.remove('hidden');
+
+            passage.questions.forEach((qObj, qIdx) => {
+                const inputEl = document.getElementById(`p3-input-${passageId}-${qIdx}`);
+                const fbEl = document.getElementById(`p3-fb-${passageId}-${qIdx}`);
+                const userAns = normalizeChinese(inputEl.value);
+
+                // Chấm điểm linh hoạt dựa trên từ khóa cốt lõi có trong câu trả lời của học viên
+                const isMatch = userAns.length > 0 && qObj.keywords.some(kw => userAns.includes(kw));
+                part3Results[`${passageId}-${qIdx}`] = isMatch;
+
+                fbEl.classList.remove('hidden');
+                fbEl.innerHTML = `
+                    <div class="flex items-center gap-1.5 font-bold ${isMatch ? 'text-emerald-400' : 'text-gold-400'}">
+                        <i class="fa-solid ${isMatch ? 'fa-circle-check' : 'fa-circle-info'}"></i>
+                        <span>${isMatch ? 'Trả lời đúng ý chính!' : (userAns ? 'Đối chiếu với đáp án gợi ý:' : 'Đáp án gợi ý:')}</span>
+                    </div>
+                    <div class="text-silver-100">
+                        <span class="text-silver-400">Đáp án mẫu:</span> <span class="chinese-text font-bold text-gold-400 text-sm">${qObj.sampleAns}</span>
+                    </div>
+                    <div class="text-silver-300">
+                        <span class="text-gold-400 font-semibold">Giải thích:</span> ${qObj.explanation}
+                    </div>
+                `;
+            });
+
+            updateGlobalScore();
+        }
+
+        function checkAllPart3() {
+            part3Data.forEach(p => checkPassage(p.id));
+            const s3 = Object.values(part3Results).filter(Boolean).length;
+            document.getElementById('part3-summary').innerHTML = `
+                Kết quả Phần 3: Bạn trả lời khớp ý chính <span class="text-gold-400 font-bold text-base">${s3} / 30</span> câu hỏi!
+            `;
+            showToast(`Đã hiển thị đáp án & bản dịch cho toàn bộ 10 đoạn văn!`);
+        }
+
+        function resetPart3() {
+            part3Results = {};
+            initPart3();
+            updateGlobalScore();
+            document.getElementById('part3-summary').textContent = "Hoàn thành các câu hỏi đọc hiểu và nhấn kiểm tra để xem bản dịch & đáp án chuẩn.";
+            showToast("Đã làm mới toàn bộ Phần 3");
+        }
+    </script>
+</body>
+</html>
