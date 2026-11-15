@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hán Ngữ CoBi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+
+<!--
+╔════════════════════════════════════════════════════════════════╗
+║  CÁCH THÊM MODULE MỚI (chỉ 2 bước)                             ║
+╠════════════════════════════════════════════════════════════════╣
+║  Bước 1: Lưu file HTML bài tập của bạn vào thư mục  modules/   ║
+║          (ví dụ: modules/hsk1-2-bai-tap.html). Giữ nguyên file, ║
+║          không cần sửa gì bên trong.                           ║
+║  Bước 2: Mở file này, tìm  const MODULES = [ ... ]  ở cuối,    ║
+║          copy 1 khối { ... } rồi sửa nội dung → xong!          ║
+║                                                                ║
+║  Đổi màu: sửa khối :root { ... } ngay bên dưới.                ║
+╚════════════════════════════════════════════════════════════════╝
+-->
+
+<style>
+  /* ============ BẢNG MÀU — SỬA Ở ĐÂY ============ */
+  :root{
+    --paper:    #FBF3DC;   /* nền giấy vàng nhạt (chủ đạo) */
+    --paper-2:  #F5E8BE;   /* vàng giấy đậm hơn */
+    --card:     #FFFBEE;   /* nền thẻ */
+    --pastel:   #F6D77A;   /* vàng pastel điểm nhấn */
+    --pastel-2: #FAE7A6;   /* vàng pastel nhạt */
+    --navy:     #1F3A5F;   /* xanh đậm chủ đạo */
+    --navy-d:   #142842;   /* xanh đậm hơn (hover) */
+    --ink:      #25303F;   /* màu chữ */
+    --ink-soft: #6A6A5E;   /* chữ phụ */
+    --line:     #E8D7A4;   /* viền */
+    --radius:   18px;
+    --shadow:   0 8px 24px rgba(90,70,20,.10);
+    --font-body:'Be Vietnam Pro', system-ui, sans-serif;
+    --font-han: 'Noto Serif SC', 'Songti SC', serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-body);color:var(--ink);background:var(--paper);
+    background-image:radial-gradient(rgba(31,58,95,.06) 1px, transparent 1px);
+    background-size:22px 22px;line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1100px, 100% - 32px);margin-inline:auto}
+
+  /* ============ THANH TRÊN ============ */
+  .topbar{
+    position:sticky;top:0;z-index:50;height:64px;
+    background:rgba(251,243,220,.94);backdrop-filter:blur(8px);
+    border-bottom:2px solid var(--navy);
+  }
+  .topbar .wrap{display:flex;align-items:center;gap:14px;height:100%}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;white-space:nowrap;cursor:pointer}
+  .seal{
+    width:38px;height:38px;border-radius:10px;background:var(--navy);color:var(--pastel);
+    display:grid;place-items:center;font-family:var(--font-han);font-weight:900;font-size:1.3rem;
+    transform:rotate(-4deg);box-shadow:2px 2px 0 var(--pastel);flex:none;
+  }
+  .brand small{display:block;font-weight:500;font-size:.62rem;color:var(--ink-soft);margin-top:-3px;max-width:340px;white-space:normal;line-height:1.3}
+  .viewer-title{margin-left:auto;font-weight:700;font-size:.92rem;color:var(--navy);display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+  .back-btn,.open-btn{
+    display:none;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;
+    font-weight:700;font-size:.85rem;cursor:pointer;border:2px solid var(--navy);font-family:inherit;transition:.2s;white-space:nowrap;
+  }
+  .back-btn{background:var(--navy);color:#fff;margin-left:auto}
+  .back-btn:hover{background:var(--navy-d)}
+  .open-btn{background:transparent;color:var(--navy)}
+  .open-btn:hover{background:var(--pastel-2)}
+
+  body.in-module .back-btn,
+  body.in-module .open-btn,
+  body.in-module .viewer-title{display:inline-flex}
+  body.in-module .back-btn{margin-left:0}
+  body.in-module .brand small{display:none}
+
+  /* ============ TRANG DANH SÁCH ============ */
+  #home{display:block}
+  body.in-module #home{display:none}
+
+  .hero{padding:48px 0 20px;text-align:center}
+  .hero-tag{
+    display:inline-block;background:var(--pastel);color:var(--navy);
+    padding:4px 16px;border-radius:999px;font-size:.76rem;font-weight:800;letter-spacing:.08em;
+  }
+  .hero h1{font-size:clamp(1.8rem,4.6vw,2.9rem);line-height:1.2;margin:14px 0 10px;font-weight:800;color:var(--navy)}
+  .hero h1 em{font-style:normal;background:linear-gradient(transparent 62%, var(--pastel) 62%);padding:0 4px}
+  .hero p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:1.02rem}
+  .hanzi-deco{font-family:var(--font-han);font-weight:900;color:var(--navy);opacity:.08;font-size:9rem;line-height:1;position:absolute;pointer-events:none;user-select:none}
+
+  .list-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:30px 0 16px;padding-bottom:10px;border-bottom:2px dashed var(--line)}
+  .list-head h2{font-size:1.2rem;font-weight:800;color:var(--navy)}
+  .list-head span{font-size:.85rem;color:var(--ink-soft)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px;padding-bottom:60px}
+
+  .card{
+    display:flex;flex-direction:column;gap:10px;
+    background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+    padding:22px;box-shadow:var(--shadow);cursor:pointer;
+    transition:transform .2s, border-color .2s, box-shadow .2s;position:relative;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--navy);box-shadow:0 14px 30px rgba(31,58,95,.16)}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .card-icon{
+    width:48px;height:48px;border-radius:14px;background:var(--navy);color:var(--pastel);
+    display:grid;place-items:center;font-family:var(--font-han);font-weight:900;font-size:1.5rem;
+  }
+  .tag{font-size:.72rem;font-weight:800;padding:3px 12px;border-radius:999px;background:var(--pastel-2);color:var(--navy);border:1px solid var(--pastel)}
+  .card h3{font-size:1.1rem;font-weight:800;color:var(--navy);line-height:1.3}
+  .card p{font-size:.9rem;color:var(--ink-soft);flex:1}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;font-size:.82rem;color:var(--ink-soft);padding-top:10px;border-top:1px dashed var(--line)}
+  .card-go{font-weight:800;color:var(--navy);display:flex;align-items:center;gap:6px}
+  .card:hover .card-go{gap:10px}
+
+  .card.soon{cursor:default;background:transparent;border-style:dashed;box-shadow:none;opacity:.75}
+  .card.soon:hover{transform:none;border-color:var(--line);box-shadow:none}
+  .card.soon .card-icon{background:var(--paper-2);color:var(--ink-soft)}
+  .card.soon .card-go{color:var(--ink-soft)}
+
+  /* ============ KHUNG MỞ MODULE ============ */
+  #viewer{display:none;height:calc(100vh - 64px);height:calc(100dvh - 64px);background:var(--paper)}
+  body.in-module #viewer{display:block}
+  body.in-module footer{display:none}
+  #viewer iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+  .viewer-note{display:none;padding:40px 20px;text-align:center;color:var(--ink-soft)}
+
+  footer{background:var(--navy);color:#e8e2cc;padding:30px 0;border-top:6px solid var(--pastel)}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+  footer .seal{background:var(--pastel);color:var(--navy);box-shadow:2px 2px 0 var(--paper);width:32px;height:32px;font-size:1.05rem}
+  footer .b{display:flex;align-items:center;gap:10px;font-weight:700;color:#fff}
+  footer small{color:#bdb799}
+
+  @media (max-width:640px){
+    .brand small{display:none}
+    .viewer-title{display:none !important}
+    .open-btn span{display:none}
+    .hanzi-deco{display:none}
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ================= THANH TRÊN ================= -->
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#/" title="Về trang chủ">
+      <!-- Muốn dùng logo thật: thay <div class="seal"> bằng <img src="logo.png" height="38"> -->
+      <div class="seal">汉</div>
+      <div>Hán Ngữ CoBi<small>Một ngày nhập Thư Quán - Trọn đời hành Hán Ngữ</small></div>
+    </a>
+
+    <!-- Chỉ hiện khi đang mở 1 module -->
+    <span class="viewer-title" id="viewerTitle"></span>
+    <a class="open-btn" id="openNewTab" href="#" target="_blank" rel="noopener">↗ <span>Mở tab mới</span></a>
+    <a class="back-btn" href="#/">← Về danh sách</a>
+  </div>
+</header>
+
+<!-- ================= TRANG DANH SÁCH ================= -->
+<div id="home">
+  <section class="hero">
+    <div class="wrap">
+      <span class="hero-tag">HÁN NGỮ COBI</span>
+      <!-- ✏️ SỬA lời chào ở đây -->
+      <h1>Chinh phục <em>tiếng Trung</em> cùng CoBi</h1>
+      <p>Chọn một bài tập bên dưới để bắt đầu luyện tập nhé!</p>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="list-head">
+      <h2>📚 Danh sách bài tập</h2>
+      <span id="countLabel"></span>
+    </div>
+    <div class="grid" id="moduleGrid"></div>
+  </main>
+</div>
+
+<!-- ================= KHUNG HIỂN THỊ MODULE ================= -->
+<div id="viewer">
+  <iframe id="moduleFrame" title="Module bài tập" allow="fullscreen"></iframe>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="b"><div class="seal">汉</div> Hán Ngữ CoBi</div>
+    <!-- ✏️ SỬA thông tin liên hệ -->
+    <small>© 2026 Hán Ngữ CoBi · Liên hệ: (thêm Zalo / Facebook / email của bạn)</small>
+  </div>
+</footer>
+
+
+<script>
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  DANH SÁCH MODULE — THÊM / SỬA / XOÁ MODULE Ở ĐÂY            ║
+   ╠══════════════════════════════════════════════════════════════╣
+   ║  id    : tên ngắn không dấu, không trùng nhau                ║
+   ║  icon  : 1 chữ Hán (hoặc emoji) hiện trên thẻ                ║
+   ║  level : nhãn nhỏ góc phải thẻ (HSK 1-2, Ngữ pháp, ...)      ║
+   ║  title : tiêu đề                                             ║
+   ║  desc  : mô tả 1-2 dòng                                      ║
+   ║  meta  : dòng chú thích nhỏ phía dưới (số câu, thời lượng…)  ║
+   ║  file  : đường dẫn tới file HTML trong thư mục modules/      ║
+   ║  soon  : true = thẻ "Sắp ra mắt" (không bấm được)            ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+const MODULES = [
+  {
+    id:    "hsk12-bo-tro",
+    icon:  "练",
+    level: "HSK 1 - 2",
+    title: "BT bổ trợ Sơ Cấp",
+    desc:  "Sắp xếp câu, sửa câu sai và đọc hiểu đoạn văn ngắn theo hệ HSK 3.0.",
+    meta:  "70 câu · 3 phần",
+    file:  "modules/hsk1-2-bai-tap.html"
+  },
+
+  /* ▼▼▼ DÁN MODULE MỚI XUỐNG DƯỚI DÒNG NÀY (nhớ có dấu phẩy ở khối trước) ▼▼▼ */
+
+  {
+    id:    "tu-vung",
+    icon:  "词",
+    level: "Sắp ra mắt",
+    title: "Từ vựng theo chủ đề",
+    desc:  "Module tiếp theo của CoBi.",
+    meta:  "",
+    file:  "",
+    soon:  true
+  },
+  {
+    id:    "nghe",
+    icon:  "听",
+    level: "Sắp ra mắt",
+    title: "Luyện nghe",
+    desc:  "Module tiếp theo của CoBi.",
+    meta:  "",
+    file:  "",
+    soon:  true
+  }
+];
+
+
+/* ============ PHẦN DƯỚI KHÔNG CẦN SỬA ============ */
+(function(){
+  var grid   = document.getElementById('moduleGrid');
+  var frame  = document.getElementById('moduleFrame');
+  var title  = document.getElementById('viewerTitle');
+  var openTab= document.getElementById('openNewTab');
+
+  // Vẽ danh sách thẻ
+  MODULES.forEach(function(m){
+    var el = document.createElement('a');
+    el.className = 'card' + (m.soon ? ' soon' : '');
+    if(!m.soon) el.href = '#/m/' + m.id;
+    el.innerHTML =
+      '<div class="card-top"><div class="card-icon">' + m.icon + '</div>' +
+      '<span class="tag">' + m.level + '</span></div>' +
+      '<h3>' + m.title + '</h3>' +
+      '<p>' + m.desc + '</p>' +
+      '<div class="card-foot"><span>' + (m.meta || '') + '</span>' +
+      '<span class="card-go">' + (m.soon ? 'Sắp có' : 'Làm bài →') + '</span></div>';
+    grid.appendChild(el);
+  });
+  var ready = MODULES.filter(function(m){return !m.soon}).length;
+  document.getElementById('countLabel').textContent = ready + ' module';
+
+  // Chuyển trang theo đường dẫn # (nút Back của trình duyệt vẫn dùng được)
+  function route(){
+    var h = location.hash || '#/';
+    var match = h.match(/^#\/m\/(.+)$/);
+    var mod = match && MODULES.find(function(m){ return m.id === match[1] && !m.soon; });
+
+    if(mod){
+      document.body.classList.add('in-module');
+      document.title = mod.title + ' · Hán Ngữ CoBi';
+      title.textContent = mod.title;
+      openTab.href = mod.file;
+      if(frame.getAttribute('data-id') !== mod.id){
+        frame.setAttribute('data-id', mod.id);
+        frame.src = mod.file;
+      }
+      window.scrollTo(0,0);
+    } else {
+      document.body.classList.remove('in-module');
+      document.title = 'Hán Ngữ CoBi';
+      frame.removeAttribute('data-id');
+      frame.src = 'about:blank';
+    }
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>
